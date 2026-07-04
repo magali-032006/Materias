@@ -4,14 +4,14 @@
     --border-radius-lg: 12px;
     --border-radius-sm: 6px;
     
-    /* Paleta de estados de materias */
+    /* Paleta de estados */
     --color-bloqueado: #e9ecef;
     --text-bloqueado: #adb5bd;
     --border-bloqueado: #dee2e6;
     
     --color-disponible: #fff9db;
     --border-disponible: #ffd43b;
-    --text-disponible: #f59f00;
+    --text-disponible: #d9480f;
     
     --color-cursada: #e7f5ff;
     --border-cursada: #339af0;
@@ -22,11 +22,10 @@
     --text-aprobada: #2b8a3e;
     
     --azul-utn: #0b3c5d;
-    --azul-utn-light: #328cc1;
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-principal);
     margin: 0;
     padding: 30px 20px;
@@ -47,7 +46,6 @@ header h1 {
     margin: 0 0 10px 0;
     font-size: 2rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
 }
 
 header p {
@@ -66,17 +64,13 @@ header p {
 
 .nivel-column {
     flex: 1;
-    min-width: 280px;
+    min-width: 290px;
+    max-width: 320px;
     background-color: var(--bg-columna);
     border-radius: var(--border-radius-lg);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
     padding: 20px 15px;
     border-top: 6px solid var(--azul-utn);
-    transition: transform 0.3s ease;
-}
-
-.nivel-column:hover {
-    transform: translateY(-2px);
 }
 
 .nivel-column h2 {
@@ -96,52 +90,34 @@ header p {
     gap: 16px;
 }
 
-/* Tarjeta de Materia Decorada */
+/* Tarjeta Fija Estructurada */
 .materia-card {
     border: 1.5px solid var(--border-bloqueado);
     border-radius: var(--border-radius-lg);
     padding: 15px;
     background-color: #fff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px; /* Evita que cambien de tamaño según el texto */
+    transition: all 0.2s ease;
 }
 
-.materia-card.bloqueada {
-    background-color: var(--color-bloqueado);
-    color: var(--text-bloqueado);
-    border-color: var(--border-bloqueado);
-}
-
-.materia-card.disponible {
-    background-color: var(--color-disponible);
-    border-color: var(--border-disponible);
-    box-shadow: 0 4px 12px rgba(255, 212, 59, 0.15);
-}
-
-.materia-card.cursada {
-    background-color: var(--color-cursada);
-    border-color: var(--border-cursada);
-    box-shadow: 0 4px 12px rgba(51, 154, 240, 0.15);
-}
-
-.materia-card.aprobada {
-    background-color: var(--color-aprobada);
-    border-color: var(--border-aprobada);
-    box-shadow: 0 4px 12px rgba(81, 207, 102, 0.15);
-}
+.materia-card.bloqueada { background-color: var(--color-bloqueado); border-color: var(--border-bloqueado); color: var(--text-bloqueado); }
+.materia-card.disponible { background-color: var(--color-disponible); border-color: var(--border-disponible); }
+.materia-card.cursada { background-color: var(--color-cursada); border-color: var(--border-cursada); }
+.materia-card.aprobada { background-color: var(--color-aprobada); border-color: var(--border-aprobada); }
 
 .materia-title {
     font-size: 0.95rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     line-height: 1.3;
+    color: #212529;
 }
 
-.materia-card.bloqueada .materia-title {
-    color: var(--text-bloqueado);
-}
-
+.materia-card.bloqueada .materia-title { color: var(--text-bloqueado); }
 .materia-card.disponible .materia-title { color: #d9480f; }
 .materia-card.cursada .materia-title { color: #1c7ed6; }
 .materia-card.aprobada .materia-title { color: #2b8a3e; }
@@ -153,17 +129,11 @@ header p {
     color: #868e96;
 }
 
-.materia-card.bloqueada .materia-info strong {
-    color: var(--text-bloqueado);
-}
-.materia-card.disponible .materia-info strong { color: #f59f00; }
-.materia-card.cursada .materia-info strong { color: #339af0; }
-.materia-card.aprobada .materia-info strong { color: #51cf66; }
-
-/* Botones Decorados */
+/* Contenedor de botones alineados abajo */
 .btn-group {
     display: flex;
     gap: 8px;
+    margin-top: auto; 
 }
 
 .btn-group button {
@@ -176,29 +146,30 @@ header p {
     cursor: pointer;
     background-color: #ffffff;
     color: #495057;
-    transition: transform 0.1s ease, background-color 0.2s ease, border-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-.btn-group button:hover {
+.btn-group button:hover:not(:disabled) {
     background-color: #f8f9fa;
     border-color: #adb5bd;
 }
 
-.materia-card.bloqueada .btn-group button {
-    pointer-events: none;
-    opacity: 0.4;
+.btn-group button:disabled {
+    cursor: not-allowed;
+    opacity: 0.3 !important;
+    background-color: #f1f3f5;
+    border-color: #dee2e6;
+    color: #ced4da;
 }
 
 button.active-regular {
     background-color: var(--border-cursada) !important;
     color: white !important;
     border-color: var(--border-cursada) !important;
-    box-shadow: 0 2px 4px rgba(51, 154, 240, 0.3);
 }
 
 button.active-aprobada {
     background-color: var(--border-aprobada) !important;
     color: white !important;
     border-color: var(--border-aprobada) !important;
-    box-shadow: 0 2px 4px rgba(81, 207, 102, 0.3);
 }
