@@ -22,11 +22,11 @@ const materias = [
 
     // --- NIVEL 3 ---
     { id: 18, nivel: 3, nombre: "Tecnologías y Ensayos de Mat. Eléctricos", correlativas: [6, 9] },
-    { id: 19, nivel: 3, font: "Instrumentos", nombre: "Instrumentos y Mediciones Eléctricas", correlativas: [10, 11, 14] },
+    { id: 19, nivel: 3, nombre: "Instrumentos y Mediciones Eléctricas", correlativas: [10, 11, 14] },
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", correlativas: [9, 16] },
     { id: 21, nivel: 3, nombre: "Física III", correlativas: [9, 16] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", correlativas: [9, 11, 14] },
-    { id: 23, nivel: 3, nombre: "Electrotecnia II", correlativas: [9, 11, 16] },
+    { id: 23, nivel: 3, font: "Electrotecnia2", nombre: "Electrotecnia II", correlativas: [9, 11, 16] },
     { id: 24, nivel: 3, nombre: "Termodinámica", correlativas: [9, 16] },
     { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", correlativas: [16, 17] },
 
@@ -50,8 +50,13 @@ const materias = [
     { id: 40, nivel: 5, nombre: "Proyecto Final", correlativas: [29, 31, 32, 26] } 
 ];
 
-const estadoMaterias = {};
-materias.forEach(m => estadoMaterias[m.id] = 'nada');
+// Intentamos cargar lo que guardamos antes; si no hay nada, arranca todo vacío ('nada')
+const guardado = localStorage.getItem('estadoMallaElectrica');
+const estadoMaterias = guardado ? JSON.parse(guardado) : {};
+
+if (!guardado) {
+    materias.forEach(m => estadoMaterias[m.id] = 'nada');
+}
 
 function init() {
     materias.forEach(materia => {
@@ -66,7 +71,6 @@ function createMateriaCard(materia) {
     card.className = `materia-card`;
     card.id = `materia-${materia.id}`;
     
-    // TEXTO CORREGIDO: Ahora solo muestra las correlativas directas necesarias para destrabarla
     card.innerHTML = `
         <div>
             <div class="materia-title">(${materia.id}) ${materia.nombre}</div>
@@ -84,6 +88,10 @@ function createMateriaCard(materia) {
 
 window.cambiarEstado = function(id, tipo) {
     estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
+    
+    // GUARDADO AUTOMÁTICO: Guarda el estado actual en el navegador
+    localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
+    
     actualizarMalla();
 }
 
@@ -91,38 +99,4 @@ function actualizarMalla() {
     materias.forEach(m => {
         const card = document.getElementById(`materia-${m.id}`);
         const btnReg = document.getElementById(`btn-reg-${m.id}`);
-        const btnApr = document.getElementById(`btn-apr-${m.id}`);
-        
-        if (!card || !btnReg || !btnApr) return;
-        
-        btnReg.className = ''; btnApr.className = '';
-        btnReg.disabled = false; btnApr.disabled = false;
-
-        if (estadoMaterias[m.id] === 'aprobada') {
-            card.className = "materia-card aprobada";
-            btnApr.className = "active-aprobada";
-            return;
-        } 
-        if (estadoMaterias[m.id] === 'cursada') {
-            card.className = "materia-card cursada";
-            btnReg.className = "active-regular";
-        }
-
-        // Lógica de funcionamiento correcta de la UTN
-        const cumpleCursar = m.correlativas.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
-        const cumpleAprobar = m.correlativas.every(cid => estadoMaterias[cid] === 'aprobada');
-
-        if (cumpleCursar) {
-            if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
-            btnReg.disabled = false; 
-            btnApr.disabled = !cumpleAprobar; // El botón de aprobado se bloquea si las de origen no tienen el final hecho
-        } else {
-            estadoMaterias[m.id] = 'nada';
-            card.className = "materia-card bloqueada";
-            btnReg.disabled = true; 
-            btnApr.disabled = true;
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", init);
+        const btnApr = document.
