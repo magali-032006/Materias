@@ -33,7 +33,7 @@ const materias = [
     // --- NIVEL 4 ---
     { id: 26, nivel: 4, nombre: "Inglés II", corrCursar: [], corrAprobar: [15] },
     { id: 27, nivel: 4, nombre: "Economía", corrCursar: [14], corrAprobar: [3] },
-    { id: 28, nivel: 4, nombre: "Electrónica I", corrCursar: [11], corrAprobar: [1, 5] },
+    { id: 28, nivel: 4, font: "Electronica1", nombre: "Electrónica I", corrCursar: [11], corrAprobar: [1, 5] },
     { id: 29, nivel: 4, nombre: "Máquinas Eléctricas II", corrCursar: [18, 20, 22, 23], corrAprobar: [6, 9, 10, 11, 14, 16] },
     { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", corrCursar: [11, 20], corrAprobar: [1, 2, 5, 9, 16] },
     { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", corrCursar: [18, 22, 23], corrAprobar: [6, 9, 11, 14, 15, 16] },
@@ -45,21 +45,18 @@ const materias = [
     { id: 35, nivel: 5, nombre: "Electrónica II", corrCursar: [28], corrAprobar: [11] },
     { id: 36, nivel: 5, nombre: "Generación, Transmisión y Distribución", corrCursar: [21, 29, 33], corrAprobar: [12, 13, 18, 22, 23, 24] },
     { id: 37, nivel: 5, nombre: "Sistemas de Potencia", corrCursar: [29], corrAprobar: [18, 22, 23] },
-    { id: 38, nivel: 5, font: "Accionamientos", nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
+    { id: 38, nivel: 5, nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
     { id: 39, nivel: 5, nombre: "Organización y Administración de Empresas", corrCursar: [27, 34], corrAprobar: [14] },
     { id: 40, nivel: 5, nombre: "Proyecto Final", corrCursar: [29, 31, 32], corrAprobar: [18, 22, 23, 25, 26] } 
 ];
 
-// Inicialización limpia
 const estadoMaterias = {};
 materias.forEach(m => estadoMaterias[m.id] = 'nada');
 
-// Intentamos cargar de forma segura
 try {
     const guardado = localStorage.getItem('estadoMallaElectrica');
     if (guardado) {
         const datosParseados = JSON.parse(guardado);
-        // Solo copiamos si el id existe en nuestro nuevo esquema
         Object.keys(datosParseados).forEach(id => {
             if (estadoMaterias[id] !== undefined) {
                 estadoMaterias[id] = datosParseados[id];
@@ -67,7 +64,7 @@ try {
         });
     }
 } catch (e) {
-    console.error("Error al cargar localStorage, se inicia limpio.", e);
+    console.error("Error al cargar localStorage", e);
 }
 
 function init() {
@@ -108,6 +105,7 @@ function createMateriaCard(materia) {
 }
 
 window.cambiarEstado = function(id, tipo) {
+    // Si ya tiene ese estado, lo saca, si no lo asigna
     estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
     try {
         localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
@@ -123,30 +121,39 @@ function actualizarMalla() {
         
         if (!card || !btnReg || !btnApr) return;
         
+        // Reset de estilos visuales básicos
         btnReg.className = ''; btnApr.className = '';
-        btnReg.disabled = false; btnApr.disabled = false;
-
+        
+        // 1. Renderizar el color de la tarjeta según su estado propio actual
         if (estadoMaterias[m.id] === 'aprobada') {
             card.className = "materia-card aprobada";
             btnApr.className = "active-aprobada";
-            return;
+            btnReg.disabled = true; // Si está aprobada, ya no editás la cursada
+            btnApr.disabled = false;
+            return; 
         } 
+        
         if (estadoMaterias[m.id] === 'cursada') {
             card.className = "materia-card cursada";
             btnReg.className = "active-regular";
         }
 
+        // 2. Evaluar habilitación de botones basándose en las correlativas
         const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
         const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
 
         if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
-            if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
+            // Si está libre o disponible
+            if (estadoMaterias[m.id] !== 'cursada') {
+                card.className = "materia-card disponible";
+            }
             btnReg.disabled = false;
             
+            // LÓGICA DE RENDIR FINAL: Requiere tener aprobadas todas las de corrCursar con final hecho
             const tieneFinalesDeCursadas = m.corrCursar.every(cid => estadoMaterias[cid] === 'aprobada');
             btnApr.disabled = !tieneFinalesDeCursadas;
         } else {
-            estadoMaterias[m.id] = 'nada';
+            // Si NO cumple correlativas, se bloquea por completo
             card.className = "materia-card bloqueada";
             btnReg.disabled = true; 
             btnApr.disabled = true;
