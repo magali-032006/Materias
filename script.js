@@ -24,7 +24,7 @@ const materias = [
     { id: 18, nivel: 3, nombre: "Tecnologías y Ensayos de Mat. Eléctricos", corrCursar: [6, 9], corrAprobar: [1, 5] },
     { id: 19, nivel: 3, nombre: "Instrumentos y Mediciones Eléctricas", corrCursar: [10, 11, 14], corrAprobar: [1, 2, 3, 4, 5, 7] },
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
-    { id: 21, nivel: 3, font: "Fisica3", nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
+    { id: 21, nivel: 3, nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", corrCursar: [9, 11, 14], corrAprobar: [1, 5, 7, 8] },
     { id: 23, nivel: 3, nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
     { id: 24, nivel: 3, nombre: "Termodinámica", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
@@ -45,24 +45,29 @@ const materias = [
     { id: 35, nivel: 5, nombre: "Electrónica II", corrCursar: [28], corrAprobar: [11] },
     { id: 36, nivel: 5, nombre: "Generación, Transmisión y Distribución", corrCursar: [21, 29, 33], corrAprobar: [12, 13, 18, 22, 23, 24] },
     { id: 37, nivel: 5, nombre: "Sistemas de Potencia", corrCursar: [29], corrAprobar: [18, 22, 23] },
-    { id: 38, nivel: 5, nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
+    { id: 38, nivel: 5, font: "Accionamientos", nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
     { id: 39, nivel: 5, nombre: "Organización y Administración de Empresas", corrCursar: [27, 34], corrAprobar: [14] },
     { id: 40, nivel: 5, nombre: "Proyecto Final", corrCursar: [29, 31, 32], corrAprobar: [18, 22, 23, 25, 26] } 
 ];
 
+// Inicialización limpia
 const estadoMaterias = {};
 materias.forEach(m => estadoMaterias[m.id] = 'nada');
 
+// Intentamos cargar de forma segura
 try {
     const guardado = localStorage.getItem('estadoMallaElectrica');
     if (guardado) {
         const datosParseados = JSON.parse(guardado);
+        // Solo copiamos si el id existe en nuestro nuevo esquema
         Object.keys(datosParseados).forEach(id => {
-            estadoMaterias[id] = datosParseados[id];
+            if (estadoMaterias[id] !== undefined) {
+                estadoMaterias[id] = datosParseados[id];
+            }
         });
     }
 } catch (e) {
-    console.error("Error al cargar localStorage", e);
+    console.error("Error al cargar localStorage, se inicia limpio.", e);
 }
 
 function init() {
@@ -78,7 +83,6 @@ function createMateriaCard(materia) {
     card.className = `materia-card`;
     card.id = `materia-${materia.id}`;
     
-    // Mantenemos la descripción explícita que me pediste para 3º, 4º y 5º
     let infoHTML = '';
     if (materia.corrCursar.length) {
         infoHTML += `• <strong>Regularizar para cursar:</strong> ${materia.corrCursar.join(', ')}<br>`;
@@ -104,4 +108,50 @@ function createMateriaCard(materia) {
 }
 
 window.cambiarEstado = function(id, tipo) {
-    estadoMaterias
+    estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
+    try {
+        localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
+    } catch (e) {}
+    actualizarMalla();
+}
+
+function actualizarMalla() {
+    materias.forEach(m => {
+        const card = document.getElementById(`materia-${m.id}`);
+        const btnReg = document.getElementById(`btn-reg-${m.id}`);
+        const btnApr = document.getElementById(`btn-apr-${m.id}`);
+        
+        if (!card || !btnReg || !btnApr) return;
+        
+        btnReg.className = ''; btnApr.className = '';
+        btnReg.disabled = false; btnApr.disabled = false;
+
+        if (estadoMaterias[m.id] === 'aprobada') {
+            card.className = "materia-card aprobada";
+            btnApr.className = "active-aprobada";
+            return;
+        } 
+        if (estadoMaterias[m.id] === 'cursada') {
+            card.className = "materia-card cursada";
+            btnReg.className = "active-regular";
+        }
+
+        const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
+        const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
+
+        if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
+            if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
+            btnReg.disabled = false;
+            
+            const tieneFinalesDeCursadas = m.corrCursar.every(cid => estadoMaterias[cid] === 'aprobada');
+            btnApr.disabled = !tieneFinalesDeCursadas;
+        } else {
+            estadoMaterias[m.id] = 'nada';
+            card.className = "materia-card bloqueada";
+            btnReg.disabled = true; 
+            btnApr.disabled = true;
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", init);
