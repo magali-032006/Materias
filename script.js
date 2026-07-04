@@ -26,7 +26,7 @@ const materias = [
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 21, nivel: 3, nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", corrCursar: [9, 11, 14], corrAprobar: [1, 5, 7, 8] },
-    { id: 23, nivel: 3, font: "Electrotecnia2", nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
+    { id: 23, nivel: 3, nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
     { id: 24, nivel: 3, nombre: "Termodinámica", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", corrCursar: [16, 17], corrAprobar: [1, 2] },
 
@@ -38,7 +38,7 @@ const materias = [
     { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", corrCursar: [11, 20], corrAprobar: [1, 2, 5, 9, 16] },
     { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", corrCursar: [18, 22, 23], corrAprobar: [6, 9, 11, 14, 15, 16] },
     { id: 32, nivel: 4, nombre: "Control Automático", corrCursar: [23, 25], corrAprobar: [11, 16] },
-    { id: 33, nivel: 4, nombre: "Máq. Térmicas, Hidráulicas y de Fluido", corrCursar: [12, 13, 24], corrAprobar: [9, 16] },
+    { id: 33, nivel: 4, font: "Maquinas", nombre: "Máq. Térmicas, Hidráulicas y de Fluido", corrCursar: [12, 13, 24], corrAprobar: [9, 16] },
     { id: 34, nivel: 4, nombre: "Legislación", corrCursar: [14], corrAprobar: [3] },
 
     // --- NIVEL 5 ---
@@ -120,10 +120,8 @@ function actualizarMalla() {
         
         if (!card || !btnReg || !btnApr) return;
         
-        // Reset inicial de estilos
         btnReg.className = ''; btnApr.className = '';
 
-        // 1. Si vos la marcaste manualmente como Aprobada o Cursada:
         if (estadoMaterias[m.id] === 'aprobada') {
             card.className = "materia-card aprobada";
             btnApr.className = "active-aprobada";
@@ -139,18 +137,14 @@ function actualizarMalla() {
             return;
         }
 
-        // 2. Condición única: ¿Podés cursarla? 
-        // Si tenés las de corrCursar (regulares/aprobadas) Y las de corrAprobar (aprobadas con final)
         const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
         const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
 
         if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
-            // SI LA PODÉS CURSAR, LA PODÉS APROBAR. Habilitamos ambos botones al mismo tiempo.
             card.className = "materia-card disponible";
             btnReg.disabled = false;
             btnApr.disabled = false;
         } else {
-            // Si no cumple los requisitos mínimos de entrada, se bloquea por completo
             card.className = "materia-card bloqueada";
             btnReg.disabled = true; 
             btnApr.disabled = true;
