@@ -9,7 +9,7 @@ const materias = [
     { id: 7, nivel: 1, nombre: "Integración Eléctrica I", corrCursar: [], corrAprobar: [] },
     { id: 8, nivel: 1, nombre: "Fundamentos de Informática", corrCursar: [], corrAprobar: [] },
 
-    // --- NIVEL 2 ---
+    // --- NIVEL 2 --- (Para Cursar pide las de 1° Regular, para Rendir pide las de 1° Aprobadas)
     { id: 9, nivel: 2, nombre: "Física II", corrCursar: [1, 5], corrAprobar: [1, 5] },
     { id: 10, nivel: 2, nombre: "Probabilidad y Estadística", corrCursar: [1, 2], corrAprobar: [1, 2] },
     { id: 11, nivel: 2, nombre: "Electrotecnia I", corrCursar: [1, 2, 5], corrAprobar: [1, 2, 5] },
@@ -37,7 +37,7 @@ const materias = [
     { id: 29, nivel: 4, nombre: "Máquinas Eléctricas II", corrCursar: [18, 20, 22, 23], corrAprobar: [6, 9, 10, 11, 14, 16] },
     { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", corrCursar: [11, 20], corrAprobar: [1, 2, 5, 9, 16] },
     { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", corrCursar: [18, 22, 23], corrAprobar: [6, 9, 11, 14, 15, 16] },
-    { id: 32, nivel: 4, font: "Control Automático", nombre: "Control Automático", corrCursar: [23, 25], corrAprobar: [11, 16] },
+    { id: 32, nivel: 4, nombre: "Control Automático", corrCursar: [23, 25], corrAprobar: [11, 16] },
     { id: 33, nivel: 4, nombre: "Máq. Térmicas, Hidráulicas y de Fluido", corrCursar: [12, 13, 24], corrAprobar: [9, 16] },
     { id: 34, nivel: 4, nombre: "Legislación", corrCursar: [14], corrAprobar: [3] },
 
@@ -46,9 +46,107 @@ const materias = [
     { id: 36, nivel: 5, nombre: "Generación, Transmisión y Distribución", corrCursar: [21, 29, 33], corrAprobar: [12, 13, 18, 22, 23, 24] },
     { id: 37, nivel: 5, nombre: "Sistemas de Potencia", corrCursar: [29], corrAprobar: [18, 22, 23] },
     { id: 38, nivel: 5, nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
-    { id: 39, nivel: 5, nombre: "Organización y Administration de Empresas", corrCursar: [27, 34], corrAprobar: [14] },
+    { id: 39, nivel: 5, nombre: "Organización y Administración de Empresas", corrCursar: [27, 34], corrAprobar: [14] },
     { id: 40, nivel: 5, nombre: "Proyecto Final", corrCursar: [29, 31, 32], corrAprobar: [18, 22, 23, 25, 26] } 
 ];
 
 const estadoMaterias = {};
-materias.forEach(m => estadoMaterias[m.id] =
+materias.forEach(m => estadoMaterias[m.id] = 'nada');
+
+function init() {
+    materias.forEach(materia => {
+        const column = document.querySelector(`#nivel-${materia.nivel} .materias-list`);
+        if (column) {
+            column.appendChild(createMateriaCard(materia));
+        }
+    });
+    actualizarMalla();
+}
+
+function createMateriaCard(materia) {
+    const card = document.createElement('div');
+    card.className = `materia-card`;
+    card.id = `materia-${materia.id}`;
+    
+    card.innerHTML = `
+        <div>
+            <div class="materia-title">(${materia.id}) ${materia.nombre}</div>
+            <div class="materia-info">
+                ${materia.corrCursar.length ? `<strong>Para Cursar (Reg):</strong> ${materia.corrCursar.join(', ')}<br>` : ''}
+                ${materia.corrAprobar.length ? `<strong>Para Rendir (Final):</strong> ${materia.corrAprobar.join(', ')}` : ''}
+            </div>
+        </div>
+        <div class="btn-group">
+            <button onclick="cambiarEstado(${materia.id}, 'cursada')" id="btn-reg-${materia.id}">Regular</button>
+            <button onclick="cambiarEstado(${materia.id}, 'aprobada')" id="btn-apr-${materia.id}">Aprobada</button>
+        </div>
+    `;
+    return card;
+}
+
+window.cambiarEstado = function(id, tipo) {
+    if (estadoMaterias[id] === tipo) {
+        estadoMaterias[id] = 'nada';
+    } else {
+        estadoMaterias[id] = tipo;
+    }
+    actualizarMalla();
+}
+
+function actualizarMalla() {
+    materias.forEach(m => {
+        const card = document.getElementById(`materia-${m.id}`);
+        const btnReg = document.getElementById(`btn-reg-${m.id}`);
+        const btnApr = document.getElementById(`btn-apr-${m.id}`);
+        
+        btnReg.className = '';
+        btnApr.className = '';
+        btnReg.disabled = false;
+        btnApr.disabled = false;
+
+        // Si el usuario la marcó como APROBADA
+        if (estadoMaterias[m.id] === 'aprobada') {
+            card.className = "materia-card aprobada";
+            btnApr.className = "active-aprobada";
+            return;
+        } 
+        
+        // Si el usuario la marcó como REGULAR
+        if (estadoMaterias[m.id] === 'cursada') {
+            card.className = "materia-card cursada";
+            btnReg.className = "active-regular";
+        }
+
+        // --- NUEVA EVALUACIÓN INDEPENDIENTE ---
+        // Para habilitar el botón "Regular" de esta materia, las de 'corrCursar' deben estar Cursadas O Aprobadas
+        const cumpleCorrCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
+        
+        // Para habilitar el botón "Aprobada" de esta materia, las de 'corrAprobar' deben estar obligatoriamente APROBADAS
+        const cumpleCorrAprobar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
+
+        if (cumpleCorrCursar) {
+            // Si no está marcada con un estado propio, queda amarilla disponible
+            if (estadoMaterias[m.id] !== 'cursada') {
+                card.className = "materia-card disponible";
+            }
+            
+            // El botón de Regular se puede usar libremente
+            btnReg.disabled = false;
+            
+            // El botón de Aprobada (Final) solo se activa si tenés los finales correlativos hechos
+            if (cumpleCorrAprobar) {
+                btnApr.disabled = false;
+            } else {
+                btnApr.disabled = true;
+            }
+        } else {
+            // Si ni siquiera tenés las cursadas necesarias, se bloquea por completo
+            estadoMaterias[m.id] = 'nada';
+            card.className = "materia-card bloqueada";
+            btnReg.disabled = true;
+            btnApr.disabled = true;
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", init);
