@@ -33,7 +33,7 @@ const materias = [
     // --- NIVEL 4 ---
     { id: 26, nivel: 4, nombre: "Inglés II", corrCursar: [], corrAprobar: [15] },
     { id: 27, nivel: 4, nombre: "Economía", corrCursar: [14], corrAprobar: [3] },
-    { id: 28, nivel: 4, font: "Electronica1", nombre: "Electrónica I", corrCursar: [11], corrAprobar: [1, 5] },
+    { id: 28, nivel: 4, nombre: "Electrónica I", corrCursar: [11], corrAprobar: [1, 5] },
     { id: 29, nivel: 4, nombre: "Máquinas Eléctricas II", corrCursar: [18, 20, 22, 23], corrAprobar: [6, 9, 10, 11, 14, 16] },
     { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", corrCursar: [11, 20], corrAprobar: [1, 2, 5, 9, 16] },
     { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", corrCursar: [18, 22, 23], corrAprobar: [6, 9, 11, 14, 15, 16] },
@@ -64,7 +64,7 @@ try {
         });
     }
 } catch (e) {
-    console.error("Error al cargar localStorage", e);
+    console.error("Error al cargar progreso", e);
 }
 
 function init() {
@@ -105,7 +105,6 @@ function createMateriaCard(materia) {
 }
 
 window.cambiarEstado = function(id, tipo) {
-    // Si ya tiene ese estado, lo saca, si no lo asigna
     estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
     try {
         localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
@@ -121,42 +120,36 @@ function actualizarMalla() {
         
         if (!card || !btnReg || !btnApr) return;
         
-        // Reset de estilos visuales básicos
         btnReg.className = ''; btnApr.className = '';
-        
-        // 1. Renderizar el color de la tarjeta según su estado propio actual
+        btnReg.disabled = false; btnApr.disabled = false; // Botones siempre libres
+
+        // 1. Estados seleccionados manualmente por vos
         if (estadoMaterias[m.id] === 'aprobada') {
-            card.className = "materia-card aprobada";
+            card.className = "materia-card aprobada"; // Verde
             btnApr.className = "active-aprobada";
-            btnReg.disabled = true; // Si está aprobada, ya no editás la cursada
-            btnApr.disabled = false;
-            return; 
+            return;
         } 
-        
         if (estadoMaterias[m.id] === 'cursada') {
-            card.className = "materia-card cursada";
+            card.className = "materia-card cursada"; // Color de cursada (ej. azul opaco o celeste)
             btnReg.className = "active-regular";
+            return;
         }
 
-        // 2. Evaluar habilitación de botones basándose en las correlativas
+        // 2. Cálculo inteligente automático de fondos cuando está en "nada"
         const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
         const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
 
         if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
-            // Si está libre o disponible
-            if (estadoMaterias[m.id] !== 'cursada') {
-                card.className = "materia-card disponible";
-            }
-            btnReg.disabled = false;
-            
-            // LÓGICA DE RENDIR FINAL: Requiere tener aprobadas todas las de corrCursar con final hecho
+            // Evaluamos si además podés rendir el final (tenés aprobadas las de corrCursar)
             const tieneFinalesDeCursadas = m.corrCursar.every(cid => estadoMaterias[cid] === 'aprobada');
-            btnApr.disabled = !tieneFinalesDeCursadas;
+            
+            if (tieneFinalesDeCursadas) {
+                card.className = "materia-card habilitada-final"; // NUEVO ESTADO: Listo para rendir final
+            } else {
+                card.className = "materia-card disponible"; // Disponible sólo para cursar (Amarillo)
+            }
         } else {
-            // Si NO cumple correlativas, se bloquea por completo
-            card.className = "materia-card bloqueada";
-            btnReg.disabled = true; 
-            btnApr.disabled = true;
+            card.className = "materia-card bloqueada"; // Bloqueada (Gris)
         }
     });
 }
