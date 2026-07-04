@@ -26,7 +26,7 @@ const materias = [
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", correlativas: [9, 16] },
     { id: 21, nivel: 3, nombre: "Física III", correlativas: [9, 16] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", correlativas: [9, 11, 14] },
-    { id: 23, nivel: 3, font: "Electrotecnia2", nombre: "Electrotecnia II", correlativas: [9, 11, 16] },
+    { id: 23, nivel: 3, nombre: "Electrotecnia II", correlativas: [9, 11, 16] },
     { id: 24, nivel: 3, nombre: "Termodinámica", correlativas: [9, 16] },
     { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", correlativas: [16, 17] },
 
@@ -38,7 +38,7 @@ const materias = [
     { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", correlativas: [11, 20] },
     { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", correlativas: [18, 22, 23] },
     { id: 32, nivel: 4, nombre: "Control Automático", correlativas: [23, 25] },
-    { id: 33, nivel: 4, nombre: "Máq. Térmicas, Hidráulicas y de Fluido", correlativas: [12, 13, 24] },
+    { id: 33, nivel: 4, font: "MaquinasTermicas", nombre: "Máq. Térmicas, Hidráulicas y de Fluido", correlativas: [12, 13, 24] },
     { id: 34, nivel: 4, nombre: "Legislación", correlativas: [14, 3] },
 
     // --- NIVEL 5 ---
@@ -50,12 +50,21 @@ const materias = [
     { id: 40, nivel: 5, nombre: "Proyecto Final", correlativas: [29, 31, 32, 26] } 
 ];
 
-// Intentamos cargar lo que guardamos antes; si no hay nada, arranca todo vacío ('nada')
-const guardado = localStorage.getItem('estadoMallaElectrica');
-const estadoMaterias = guardado ? JSON.parse(guardado) : {};
+// INICIALIZACIÓN BLINDADA: Primero seteamos todo en 'nada'
+const estadoMaterias = {};
+materias.forEach(m => estadoMaterias[m.id] = 'nada');
 
-if (!guardado) {
-    materias.forEach(m => estadoMaterias[m.id] = 'nada');
+// Si hay un guardado previo válido, reemplazamos los valores
+try {
+    const guardado = localStorage.getItem('estadoMallaElectrica');
+    if (guardado) {
+        const datosParseados = JSON.parse(guardado);
+        Object.keys(datosParseados).forEach(id => {
+            estadoMaterias[id] = datosParseados[id];
+        });
+    }
+} catch (e) {
+    console.error("Error al cargar el localStorage", e);
 }
 
 function init() {
@@ -88,10 +97,7 @@ function createMateriaCard(materia) {
 
 window.cambiarEstado = function(id, tipo) {
     estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
-    
-    // GUARDADO AUTOMÁTICO: Guarda el estado actual en el navegador
     localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
-    
     actualizarMalla();
 }
 
@@ -99,4 +105,39 @@ function actualizarMalla() {
     materias.forEach(m => {
         const card = document.getElementById(`materia-${m.id}`);
         const btnReg = document.getElementById(`btn-reg-${m.id}`);
-        const btnApr = document.
+        const btnApr = document.getElementById(`btn-apr-${m.id}`);
+        
+        if (!card || !btnReg || !btnApr) return;
+        
+        btnReg.className = ''; btnApr.className = '';
+        btnReg.disabled = false; btnApr.disabled = false;
+
+        if (estadoMaterias[m.id] === 'aprobada') {
+            card.className = "materia-card aprobada";
+            btnApr.className = "active-aprobada";
+            return;
+        } 
+        if (estadoMaterias[m.id] === 'cursada') {
+            card.className = "materia-card cursada";
+            btnReg.className = "active-regular";
+        }
+
+        const cumpleCursar = m.correlativas.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
+        const cumpleAprobar = m.correlativas.every(cid => estadoMaterias[cid] === 'aprobada');
+
+        if (cumpleCursar) {
+            if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
+            btnReg.disabled = false; 
+            btnApr.disabled = !cumpleAprobar; 
+        } else {
+            estadoMaterias[m.id] = 'nada';
+            card.className = "materia-card bloqueada";
+            btnReg.disabled = true; 
+            btnApr.disabled = true;
+        }
+    });
+    
+    localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
+}
+
+document.addEventListener("DOMContentLoaded", init);
