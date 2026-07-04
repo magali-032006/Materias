@@ -17,14 +17,14 @@ const materias = [
     { id: 13, nivel: 2, nombre: "Mecánica Técnica", corrCursar: [1, 5], corrAprobar: [1, 5] },
     { id: 14, nivel: 2, nombre: "Integración Eléctrica II", corrCursar: [1, 5, 7], corrAprobar: [1, 5, 7] },
     { id: 15, nivel: 2, nombre: "Inglés I", corrCursar: [], corrAprobar: [] },
-    { id: 16, nivel: 2, font: "Analisis2", nombre: "Análisis Matemático II", corrCursar: [1, 2], corrAprobar: [1, 2] },
+    { id: 16, nivel: 2, nombre: "Análisis Matemático II", corrCursar: [1, 2], corrAprobar: [1, 2] },
     { id: 17, nivel: 2, nombre: "Cálculo Numérico", corrCursar: [1, 2], corrAprobar: [1, 2] },
 
     // --- NIVEL 3 ---
     { id: 18, nivel: 3, nombre: "Tecnologías y Ensayos de Mat. Eléctricos", corrCursar: [6, 9], corrAprobar: [1, 5] },
     { id: 19, nivel: 3, nombre: "Instrumentos y Mediciones Eléctricas", corrCursar: [10, 11, 14], corrAprobar: [1, 2, 3, 4, 5, 7] },
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
-    { id: 21, nivel: 3, nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
+    { id: 21, nivel: 3, font: "Fisica3", nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", corrCursar: [9, 11, 14], corrAprobar: [1, 5, 7, 8] },
     { id: 23, nivel: 3, nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
     { id: 24, nivel: 3, nombre: "Termodinámica", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
@@ -78,6 +78,7 @@ function createMateriaCard(materia) {
     card.className = `materia-card`;
     card.id = `materia-${materia.id}`;
     
+    // Mantenemos la descripción explícita que me pediste para 3º, 4º y 5º
     let infoHTML = '';
     if (materia.corrCursar.length) {
         infoHTML += `• <strong>Regularizar para cursar:</strong> ${materia.corrCursar.join(', ')}<br>`;
@@ -103,50 +104,4 @@ function createMateriaCard(materia) {
 }
 
 window.cambiarEstado = function(id, tipo) {
-    estadoMaterias[id] = (estadoMaterias[id] === tipo) ? 'nada' : tipo;
-    localStorage.setItem('estadoMallaElectrica', JSON.stringify(estadoMaterias));
-    actualizarMalla();
-}
-
-function actualizarMalla() {
-    materias.forEach(m => {
-        const card = document.getElementById(`materia-${m.id}`);
-        const btnReg = document.getElementById(`btn-reg-${m.id}`);
-        const btnApr = document.getElementById(`btn-apr-${m.id}`);
-        
-        if (!card || !btnReg || !btnApr) return;
-        
-        btnReg.className = ''; btnApr.className = '';
-        btnReg.disabled = false; btnApr.disabled = false;
-
-        if (estadoMaterias[m.id] === 'aprobada') {
-            card.className = "materia-card aprobada";
-            btnApr.className = "active-aprobada";
-            return;
-        } 
-        if (estadoMaterias[m.id] === 'cursada') {
-            card.className = "materia-card cursada";
-            btnReg.className = "active-regular";
-        }
-
-        // 1. Verificamos si cumple requisitos para cursar (habilita botón Regular)
-        const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
-        const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
-
-        if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
-            if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
-            btnReg.disabled = false;
-            
-            // LÓGICA CORREGIDA PARA EL FINAL: 
-            // Podés aprobar el final de esta materia si ya tenés aprobados los finales de su lista 'corrAprobar'
-            btnApr.disabled = !tieneAprobadasParaCursar;
-        } else {
-            estadoMaterias[m.id] = 'nada';
-            card.className = "materia-card bloqueada";
-            btnReg.disabled = true; 
-            btnApr.disabled = true;
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", init);
+    estadoMaterias
