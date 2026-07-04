@@ -1,3 +1,10 @@
+/* RESETEO ESENCIAL: Evita que los tamaños se desacomoden con paddings o bordes */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 :root {
     --bg-principal: #f0f4f8;
     --bg-columna: #ffffff;
@@ -27,9 +34,9 @@
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-principal);
-    margin: 0;
     padding: 30px 20px;
     color: #495057;
+    line-height: 1.5;
 }
 
 header {
@@ -43,39 +50,40 @@ header {
 }
 
 header h1 {
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
     font-size: 2rem;
     font-weight: 800;
 }
 
 header p {
-    margin: 0;
     font-size: 1rem;
     opacity: 0.9;
 }
 
+/* Contenedor de la Malla de lado a lado */
 .malla-container {
     display: flex;
-    gap: 25px;
-    overflow-x: auto;
+    gap: 20px;
+    overflow-x: auto; /* Permite scroll horizontal si no entra en pantalla */
     align-items: flex-start;
-    padding: 10px 10px 25px 10px;
+    padding-bottom: 20px;
+    width: 100%;
 }
 
+/* Columnas por cada Año */
 .nivel-column {
     flex: 1;
-    min-width: 290px;
+    min-width: 280px;
     max-width: 320px;
     background-color: var(--bg-columna);
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 20px 15px;
     border-top: 6px solid var(--azul-utn);
 }
 
 .nivel-column h2 {
     text-align: center;
-    margin-top: 0;
     margin-bottom: 20px;
     color: var(--azul-utn);
     font-size: 1.25rem;
@@ -84,13 +92,14 @@ header p {
     padding-bottom: 10px;
 }
 
+/* Lista vertical de materias dentro de la columna */
 .materias-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
 }
 
-/* Tarjeta Fija Estructurada */
+/* Tarjeta de Materia simétrica */
 .materia-card {
     border: 1.5px solid var(--border-bloqueado);
     border-radius: var(--border-radius-lg);
@@ -100,8 +109,7 @@ header p {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 120px; /* Evita que cambien de tamaño según el texto */
-    transition: all 0.2s ease;
+    min-height: 130px; /* Altura mínima fija para que todas queden parejas */
 }
 
 .materia-card.bloqueada { background-color: var(--color-bloqueado); border-color: var(--border-bloqueado); color: var(--text-bloqueado); }
@@ -112,7 +120,7 @@ header p {
 .materia-title {
     font-size: 0.95rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     line-height: 1.3;
     color: #212529;
 }
@@ -124,15 +132,15 @@ header p {
 
 .materia-info {
     font-size: 0.75rem;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     line-height: 1.4;
     color: #868e96;
 }
 
-/* Contenedor de botones alineados abajo */
+/* Botones alineados abajo de la tarjeta */
 .btn-group {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-top: auto; 
 }
 
@@ -140,13 +148,12 @@ header p {
     flex: 1;
     font-size: 0.75rem;
     font-weight: 600;
-    padding: 8px 4px;
+    padding: 8px 2px;
     border: 1.5px solid #dee2e6;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
     background-color: #ffffff;
     color: #495057;
-    transition: all 0.2s ease;
 }
 
 .btn-group button:hover:not(:disabled) {
