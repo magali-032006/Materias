@@ -1,0 +1,117 @@
+:root {
+    --color-bloqueado: #e0e0e0;
+    --color-disponible: #fffbdf; /* Amarillo claro */
+    --color-cursada: #bbdefb; /* Azul claro */
+    --color-aprobada: #c8e6c9; /* Verde claro */
+    --text-bloqueado: #9e9e9e;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.malla-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    align-items: flex-start;
+    padding-bottom: 20px;
+}
+
+.nivel-column {
+    flex: 1;
+    min-width: 250px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 15px;
+    border-top: 5px solid #0056b3;
+}
+
+.nivel-column h2 {
+    text-align: center;
+    margin-top: 0;
+    color: #0056b3;
+    font-size: 1.2rem;
+}
+
+.materias-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Tarjeta de Materia */
+.materia-card {
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.materia-card.bloqueada {
+    background-color: var(--color-bloqueado);
+    color: var(--text-bloqueado);
+    border-color: #d6d6d6;
+}
+
+.materia-card.disponible {
+    background-color: var(--color-disponible);
+    border-color: #fbc02d;
+}
+
+.materia-card.cursada {
+    background-color: var(--color-cursada);
+    border-color: #1976d2;
+}
+
+.materia-card.aprobada {
+    background-color: var(--color-aprobada);
+    border-color: #388e3c;
+}
+
+.materia-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.materia-info {
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.btn-group {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-group button {
+    flex: 1;
+    font-size: 0.75rem;
+    padding: 5px 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background 0.2s;
+}
+
+.materia-card.bloqueada .btn-group button {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+button.active-regular { background-color: #42a5f5; color: white; border-color: #1976d2; }
+button.active-final { background-color: #66bb6a; color: white; border-color: #388e3c; }
