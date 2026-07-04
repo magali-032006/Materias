@@ -26,7 +26,7 @@ const materias = [
     { id: 20, nivel: 3, nombre: "Teoría de los Campos", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 21, nivel: 3, nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", corrCursar: [9, 11, 14], corrAprobar: [1, 5, 7, 8] },
-    { id: 23, nivel: 3, nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
+    { id: 23, nivel: 3, font: "Electrotecnia2", nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
     { id: 24, nivel: 3, nombre: "Termodinámica", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
     { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", corrCursar: [16, 17], corrAprobar: [1, 2] },
 
@@ -64,7 +64,7 @@ try {
         });
     }
 } catch (e) {
-    console.error("Error al cargar progreso", e);
+    console.error("Error al cargar localStorage", e);
 }
 
 function init() {
@@ -120,36 +120,40 @@ function actualizarMalla() {
         
         if (!card || !btnReg || !btnApr) return;
         
+        // Reset inicial de estilos
         btnReg.className = ''; btnApr.className = '';
-        btnReg.disabled = false; btnApr.disabled = false; // Botones siempre libres
 
-        // 1. Estados seleccionados manualmente por vos
+        // 1. Si vos la marcaste manualmente como Aprobada o Cursada:
         if (estadoMaterias[m.id] === 'aprobada') {
-            card.className = "materia-card aprobada"; // Verde
+            card.className = "materia-card aprobada";
             btnApr.className = "active-aprobada";
+            btnReg.disabled = false;
+            btnApr.disabled = false;
             return;
         } 
         if (estadoMaterias[m.id] === 'cursada') {
-            card.className = "materia-card cursada"; // Color de cursada (ej. azul opaco o celeste)
+            card.className = "materia-card cursada";
             btnReg.className = "active-regular";
+            btnReg.disabled = false;
+            btnApr.disabled = false;
             return;
         }
 
-        // 2. Cálculo inteligente automático de fondos cuando está en "nada"
+        // 2. Condición única: ¿Podés cursarla? 
+        // Si tenés las de corrCursar (regulares/aprobadas) Y las de corrAprobar (aprobadas con final)
         const tieneRegularesParaCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
         const tieneAprobadasParaCursar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
 
         if (tieneRegularesParaCursar && tieneAprobadasParaCursar) {
-            // Evaluamos si además podés rendir el final (tenés aprobadas las de corrCursar)
-            const tieneFinalesDeCursadas = m.corrCursar.every(cid => estadoMaterias[cid] === 'aprobada');
-            
-            if (tieneFinalesDeCursadas) {
-                card.className = "materia-card habilitada-final"; // NUEVO ESTADO: Listo para rendir final
-            } else {
-                card.className = "materia-card disponible"; // Disponible sólo para cursar (Amarillo)
-            }
+            // SI LA PODÉS CURSAR, LA PODÉS APROBAR. Habilitamos ambos botones al mismo tiempo.
+            card.className = "materia-card disponible";
+            btnReg.disabled = false;
+            btnApr.disabled = false;
         } else {
-            card.className = "materia-card bloqueada"; // Bloqueada (Gris)
+            // Si no cumple los requisitos mínimos de entrada, se bloquea por completo
+            card.className = "materia-card bloqueada";
+            btnReg.disabled = true; 
+            btnApr.disabled = true;
         }
     });
 }
