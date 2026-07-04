@@ -1,53 +1,53 @@
 const materias = [
     // --- NIVEL 1 ---
-    { id: 1, nivel: 1, nombre: "Análisis Matemático I", corrCursar: [], corrAprobar: [] },
-    { id: 2, nivel: 1, nombre: "Álgebra y Geometría Analítica", corrCursar: [], corrAprobar: [] },
-    { id: 3, nivel: 1, nombre: "Ingeniería y Sociedad", corrCursar: [], corrAprobar: [] },
-    { id: 4, nivel: 1, nombre: "Sistemas de Representación", corrCursar: [], corrAprobar: [] },
-    { id: 5, nivel: 1, nombre: "Física I", corrCursar: [], corrAprobar: [] },
-    { id: 6, nivel: 1, nombre: "Química General", corrCursar: [], corrAprobar: [] },
-    { id: 7, nivel: 1, nombre: "Integración Eléctrica I", corrCursar: [], corrAprobar: [] },
-    { id: 8, nivel: 1, nombre: "Fundamentos de Informática", corrCursar: [], corrAprobar: [] },
+    { id: 1, nivel: 1, nombre: "Análisis Matemático I", correlativas: [] },
+    { id: 2, nivel: 1, nombre: "Álgebra y Geometría Analítica", correlativas: [] },
+    { id: 3, nivel: 1, nombre: "Ingeniería y Sociedad", correlativas: [] },
+    { id: 4, nivel: 1, nombre: "Sistemas de Representación", correlativas: [] },
+    { id: 5, nivel: 1, nombre: "Física I", correlativas: [] },
+    { id: 6, nivel: 1, nombre: "Química General", correlativas: [] },
+    { id: 7, nivel: 1, nombre: "Integración Eléctrica I", correlativas: [] },
+    { id: 8, nivel: 1, nombre: "Fundamentos de Informática", correlativas: [] },
 
     // --- NIVEL 2 ---
-    { id: 9, nivel: 2, nombre: "Física II", corrCursar: [1, 5], corrAprobar: [1, 5] },
-    { id: 10, nivel: 2, nombre: "Probabilidad y Estadística", corrCursar: [1, 2], corrAprobar: [1, 2] },
-    { id: 11, nivel: 2, nombre: "Electrotecnia I", corrCursar: [1, 2, 5], corrAprobar: [1, 2, 5] },
-    { id: 12, nivel: 2, nombre: "Estabilidad", corrCursar: [2, 5], corrAprobar: [2, 5] },
-    { id: 13, nivel: 2, nombre: "Mecánica Técnica", corrCursar: [1, 5], corrAprobar: [1, 5] },
-    { id: 14, nivel: 2, nombre: "Integración Eléctrica II", corrCursar: [1, 5, 7], corrAprobar: [1, 5, 7] },
-    { id: 15, nivel: 2, nombre: "Inglés I", corrCursar: [], corrAprobar: [] },
-    { id: 16, nivel: 2, nombre: "Análisis Matemático II", corrCursar: [1, 2], corrAprobar: [1, 2] },
-    { id: 17, nivel: 2, nombre: "Cálculo Numérico", corrCursar: [1, 2], corrAprobar: [1, 2] },
+    { id: 9, nivel: 2, nombre: "Física II", correlativas: [1, 5] },
+    { id: 10, nivel: 2, nombre: "Probabilidad y Estadística", correlativas: [1, 2] },
+    { id: 11, nivel: 2, nombre: "Electrotecnia I", correlativas: [1, 2, 5] },
+    { id: 12, nivel: 2, nombre: "Estabilidad", correlativas: [2, 5] },
+    { id: 13, nivel: 2, nombre: "Mecánica Técnica", correlativas: [1, 5] },
+    { id: 14, nivel: 2, nombre: "Integración Eléctrica II", correlativas: [1, 5, 7] },
+    { id: 15, nivel: 2, nombre: "Inglés I", correlativas: [] },
+    { id: 16, nivel: 2, nombre: "Análisis Matemático II", correlativas: [1, 2] },
+    { id: 17, nivel: 2, nombre: "Cálculo Numérico", correlativas: [1, 2] },
 
     // --- NIVEL 3 ---
-    { id: 18, nivel: 3, nombre: "Tecnologías y Ensayos de Mat. Eléctricos", corrCursar: [6, 9], corrAprobar: [1, 5] },
-    { id: 19, nivel: 3, nombre: "Instrumentos y Mediciones Eléctricas", corrCursar: [10, 11, 14], corrAprobar: [1, 2, 3, 4, 5, 7] },
-    { id: 20, nivel: 3, nombre: "Teoría de los Campos", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
-    { id: 21, nivel: 3, nombre: "Física III", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
-    { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", corrCursar: [9, 11, 14], corrAprobar: [1, 5, 7, 8] },
-    { id: 23, nivel: 3, nombre: "Electrotecnia II", corrCursar: [9, 11, 16], corrAprobar: [1, 2, 5] },
-    { id: 24, nivel: 3, nombre: "Termodinámica", corrCursar: [9, 16], corrAprobar: [1, 2, 5] },
-    { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", corrCursar: [16, 17], corrAprobar: [1, 2] },
+    { id: 18, nivel: 3, nombre: "Tecnologías y Ensayos de Mat. Eléctricos", correlativas: [6, 9] },
+    { id: 19, nivel: 3, font: "Instrumentos", nombre: "Instrumentos y Mediciones Eléctricas", correlativas: [10, 11, 14] },
+    { id: 20, nivel: 3, nombre: "Teoría de los Campos", correlativas: [9, 16] },
+    { id: 21, nivel: 3, nombre: "Física III", correlativas: [9, 16] },
+    { id: 22, nivel: 3, nombre: "Máquinas Eléctricas I", correlativas: [9, 11, 14] },
+    { id: 23, nivel: 3, nombre: "Electrotecnia II", correlativas: [9, 11, 16] },
+    { id: 24, nivel: 3, nombre: "Termodinámica", correlativas: [9, 16] },
+    { id: 25, nivel: 3, nombre: "Fundamentos para el Análisis de Señales", correlativas: [16, 17] },
 
     // --- NIVEL 4 ---
-    { id: 26, nivel: 4, nombre: "Inglés II", corrCursar: [], corrAprobar: [15] },
-    { id: 27, nivel: 4, nombre: "Economía", corrCursar: [14], corrAprobar: [3] },
-    { id: 28, nivel: 4, nombre: "Electrónica I", corrCursar: [11], corrAprobar: [1, 5] },
-    { id: 29, nivel: 4, nombre: "Máquinas Eléctricas II", corrCursar: [18, 20, 22, 23], corrAprobar: [6, 9, 10, 11, 14, 16] },
-    { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", corrCursar: [11, 20], corrAprobar: [1, 2, 5, 9, 16] },
-    { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", corrCursar: [18, 22, 23], corrAprobar: [6, 9, 11, 14, 15, 16] },
-    { id: 32, nivel: 4, nombre: "Control Automático", corrCursar: [23, 25], corrAprobar: [11, 16] },
-    { id: 33, nivel: 4, nombre: "Máq. Térmicas, Hidráulicas y de Fluido", corrCursar: [12, 13, 24], corrAprobar: [9, 16] },
-    { id: 34, nivel: 4, nombre: "Legislación", corrCursar: [14], corrAprobar: [3] },
+    { id: 26, nivel: 4, nombre: "Inglés II", correlativas: [15] },
+    { id: 27, nivel: 4, nombre: "Economía", correlativas: [14, 3] },
+    { id: 28, nivel: 4, nombre: "Electrónica I", correlativas: [11] },
+    { id: 29, nivel: 4, nombre: "Máquinas Eléctricas II", correlativas: [18, 20, 22, 23] },
+    { id: 30, nivel: 4, nombre: "Seguridad, Riesgo Eléctrico y M.A.", correlativas: [11, 20] },
+    { id: 31, nivel: 4, nombre: "Instalaciones Eléctricas y Luminotecnia", correlativas: [18, 22, 23] },
+    { id: 32, nivel: 4, nombre: "Control Automático", correlativas: [23, 25] },
+    { id: 33, nivel: 4, nombre: "Máq. Térmicas, Hidráulicas y de Fluido", correlativas: [12, 13, 24] },
+    { id: 34, nivel: 4, nombre: "Legislación", correlativas: [14, 3] },
 
     // --- NIVEL 5 ---
-    { id: 35, nivel: 5, nombre: "Electrónica II", corrCursar: [28], corrAprobar: [11] },
-    { id: 36, nivel: 5, nombre: "Generación, Transmisión y Distribución", corrCursar: [21, 29, 33], corrAprobar: [12, 13, 18, 22, 23, 24] },
-    { id: 37, nivel: 5, nombre: "Sistemas de Potencia", corrCursar: [29], corrAprobar: [18, 22, 23] },
-    { id: 38, nivel: 5, nombre: "Accionamientos y Controles Eléctricos", corrCursar: [28, 29, 32], corrAprobar: [11, 18, 22, 23, 25] },
-    { id: 39, nivel: 5, nombre: "Organización y Administración de Empresas", corrCursar: [27, 34], corrAprobar: [14] },
-    { id: 40, nivel: 5, nombre: "Proyecto Final", corrCursar: [29, 31, 32], corrAprobar: [18, 22, 23, 25, 26] } 
+    { id: 35, nivel: 5, nombre: "Electrónica II", correlativas: [28] },
+    { id: 36, nivel: 5, nombre: "Generación, Transmisión y Distribución", correlativas: [21, 29, 33] },
+    { id: 37, nivel: 5, nombre: "Sistemas de Potencia", correlativas: [29] },
+    { id: 38, nivel: 5, nombre: "Accionamientos y Controles Eléctricos", correlativas: [28, 29, 32] },
+    { id: 39, nivel: 5, nombre: "Organización y Administración de Empresas", correlativas: [27, 34] },
+    { id: 40, nivel: 5, nombre: "Proyecto Final", correlativas: [29, 31, 32, 26] } 
 ];
 
 const estadoMaterias = {};
@@ -66,14 +66,12 @@ function createMateriaCard(materia) {
     card.className = `materia-card`;
     card.id = `materia-${materia.id}`;
     
-    // Acá armamos el texto explícito que querías ver en pantalla
+    // TEXTO CORREGIDO: Ahora solo muestra las correlativas directas necesarias para destrabarla
     card.innerHTML = `
         <div>
             <div class="materia-title">(${materia.id}) ${materia.nombre}</div>
             <div class="materia-info">
-                ${materia.corrCursar.length ? `• <strong>Regularizar:</strong> ${materia.corrCursar.join(', ')}<br>` : ''}
-                ${materia.corrAprobar.length ? `• <strong>Aprobar:</strong> ${materia.corrAprobar.join(', ')}` : ''}
-                ${!materia.corrCursar.length && !materia.corrAprobar.length ? 'Sin correlativas' : ''}
+                ${materia.correlativas.length ? `• <strong>Requiere Regularizar:</strong> ${materia.correlativas.join(', ')}` : 'Sin correlativas'}
             </div>
         </div>
         <div class="btn-group">
@@ -110,17 +108,14 @@ function actualizarMalla() {
             btnReg.className = "active-regular";
         }
 
-        // EVALUACIÓN DE REQUISITOS REALES UTN
-        // Para Cursar: las de 'corrCursar' deben estar al menos Cursadas (Regulares) o ya Aprobadas
-        const cumpleCursar = m.corrCursar.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
-        
-        // Para Rendir: las de 'corrAprobar' deben estar cargadas como Aprobadas con Final obligatoriamente
-        const cumpleAprobar = m.corrAprobar.every(cid => estadoMaterias[cid] === 'aprobada');
+        // Lógica de funcionamiento correcta de la UTN
+        const cumpleCursar = m.correlativas.every(cid => estadoMaterias[cid] === 'cursada' || estadoMaterias[cid] === 'aprobada');
+        const cumpleAprobar = m.correlativas.every(cid => estadoMaterias[cid] === 'aprobada');
 
         if (cumpleCursar) {
             if (estadoMaterias[m.id] !== 'cursada') card.className = "materia-card disponible";
-            btnReg.disabled = false;
-            btnApr.disabled = !cumpleAprobar; 
+            btnReg.disabled = false; 
+            btnApr.disabled = !cumpleAprobar; // El botón de aprobado se bloquea si las de origen no tienen el final hecho
         } else {
             estadoMaterias[m.id] = 'nada';
             card.className = "materia-card bloqueada";
