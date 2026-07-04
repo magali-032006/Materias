@@ -1,117 +1,204 @@
 :root {
-    --color-bloqueado: #e0e0e0;
-    --color-disponible: #fffbdf; /* Amarillo claro */
-    --color-cursada: #bbdefb; /* Azul claro */
-    --color-aprobada: #c8e6c9; /* Verde claro */
-    --text-bloqueado: #9e9e9e;
+    --bg-principal: #f0f4f8;
+    --bg-columna: #ffffff;
+    --border-radius-lg: 12px;
+    --border-radius-sm: 6px;
+    
+    /* Paleta de estados de materias */
+    --color-bloqueado: #e9ecef;
+    --text-bloqueado: #adb5bd;
+    --border-bloqueado: #dee2e6;
+    
+    --color-disponible: #fff9db;
+    --border-disponible: #ffd43b;
+    --text-disponible: #f59f00;
+    
+    --color-cursada: #e7f5ff;
+    --border-cursada: #339af0;
+    --text-cursada: #1c7ed6;
+    
+    --color-aprobada: #ebfbee;
+    --border-aprobada: #51cf66;
+    --text-aprobada: #2b8a3e;
+    
+    --azul-utn: #0b3c5d;
+    --azul-utn-light: #328cc1;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-principal);
     margin: 0;
-    padding: 20px;
-    color: #333;
+    padding: 30px 20px;
+    color: #495057;
 }
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, var(--azul-utn) 0%, #1d2731; 100%);
+    padding: 30px;
+    border-radius: var(--border-radius-lg);
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
 }
 
 .malla-container {
     display: flex;
-    gap: 20px;
+    gap: 25px;
     overflow-x: auto;
     align-items: flex-start;
-    padding-bottom: 20px;
+    padding: 10px 10px 25px 10px;
 }
 
 .nivel-column {
     flex: 1;
-    min-width: 250px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    padding: 15px;
-    border-top: 5px solid #0056b3;
+    min-width: 280px;
+    background-color: var(--bg-columna);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+    padding: 20px 15px;
+    border-top: 6px solid var(--azul-utn);
+    transition: transform 0.3s ease;
+}
+
+.nivel-column:hover {
+    transform: translateY(-2px);
 }
 
 .nivel-column h2 {
     text-align: center;
     margin-top: 0;
-    color: #0056b3;
-    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--azul-utn);
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-bottom: 2px solid #f1f3f5;
+    padding-bottom: 10px;
 }
 
 .materias-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
 }
 
-/* Tarjeta de Materia */
+/* Tarjeta de Materia Decorada */
 .materia-card {
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    padding: 12px;
+    border: 1.5px solid var(--border-bloqueado);
+    border-radius: var(--border-radius-lg);
+    padding: 15px;
     background-color: #fff;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    position: relative;
 }
 
 .materia-card.bloqueada {
     background-color: var(--color-bloqueado);
     color: var(--text-bloqueado);
-    border-color: #d6d6d6;
+    border-color: var(--border-bloqueado);
 }
 
 .materia-card.disponible {
     background-color: var(--color-disponible);
-    border-color: #fbc02d;
+    border-color: var(--border-disponible);
+    box-shadow: 0 4px 12px rgba(255, 212, 59, 0.15);
 }
 
 .materia-card.cursada {
     background-color: var(--color-cursada);
-    border-color: #1976d2;
+    border-color: var(--border-cursada);
+    box-shadow: 0 4px 12px rgba(51, 154, 240, 0.15);
 }
 
 .materia-card.aprobada {
     background-color: var(--color-aprobada);
-    border-color: #388e3c;
+    border-color: var(--border-aprobada);
+    box-shadow: 0 4px 12px rgba(81, 207, 102, 0.15);
 }
 
 .materia-title {
     font-size: 0.95rem;
-    font-weight: bold;
-    margin-bottom: 8px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.3;
 }
+
+.materia-card.bloqueada .materia-title {
+    color: var(--text-bloqueado);
+}
+
+.materia-card.disponible .materia-title { color: #d9480f; }
+.materia-card.cursada .materia-title { color: #1c7ed6; }
+.materia-card.aprobada .materia-title { color: #2b8a3e; }
 
 .materia-info {
     font-size: 0.75rem;
-    margin-bottom: 8px;
-    line-height: 1.2;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    color: #868e96;
 }
 
+.materia-card.bloqueada .materia-info strong {
+    color: var(--text-bloqueado);
+}
+.materia-card.disponible .materia-info strong { color: #f59f00; }
+.materia-card.cursada .materia-info strong { color: #339af0; }
+.materia-card.aprobada .materia-info strong { color: #51cf66; }
+
+/* Botones Decorados */
 .btn-group {
     display: flex;
-    gap: 5px;
+    gap: 8px;
 }
 
 .btn-group button {
     flex: 1;
     font-size: 0.75rem;
-    padding: 5px 2px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    font-weight: 600;
+    padding: 8px 4px;
+    border: 1.5px solid #dee2e6;
+    border-radius: var(--border-radius-sm);
     cursor: pointer;
-    background-color: #fff;
-    transition: background 0.2s;
+    background-color: #ffffff;
+    color: #495057;
+    transition: transform 0.1s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-group button:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
 }
 
 .materia-card.bloqueada .btn-group button {
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
-button.active-regular { background-color: #42a5f5; color: white; border-color: #1976d2; }
-button.active-final { background-color: #66bb6a; color: white; border-color: #388e3c; }
+button.active-regular {
+    background-color: var(--border-cursada) !important;
+    color: white !important;
+    border-color: var(--border-cursada) !important;
+    box-shadow: 0 2px 4px rgba(51, 154, 240, 0.3);
+}
+
+button.active-aprobada {
+    background-color: var(--border-aprobada) !important;
+    color: white !important;
+    border-color: var(--border-aprobada) !important;
+    box-shadow: 0 2px 4px rgba(81, 207, 102, 0.3);
+}
